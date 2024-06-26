@@ -39,7 +39,7 @@ const Header: React.FC = () => {
                     {/* Logo and left-side links */}
                     <div className="flex items-center space-x-8">
                         <Link href="/">
-                            <button className="text-2xl font-bold text-blue-900 hover:text-blue-500 transition-colors">Virtual Staging AI</button>
+                            <button className="text-2xl font-bold text-blue-900 hover:text-blue-500 transition-colors">HSGS Hackathon 2024</button>
                         </Link>
                         <button className="text-3xl md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
                             &#9776;
