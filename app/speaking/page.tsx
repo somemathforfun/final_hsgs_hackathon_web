@@ -74,12 +74,6 @@ const SpeakingPage = () => {
         setRecords(savedRecords);
     }, []);
 
-    const handleSaveRecord = () => {
-        if (rating && feedback && wordsPerMinute && fluency) {
-            saveRecord(transcript, prompt, audioBlobRef.current, rating, feedback, wordsPerMinute, fluency);
-        }
-    };
-
     const rateTranscript = (transcript: string, prompt: string) => {
         fetch("https://openrouter.ai/api/v1/chat/completions", {
             method: "POST",
@@ -98,7 +92,6 @@ const SpeakingPage = () => {
         .then(data => {
             const messageContent = data.choices[0].message.content;
             setRating(messageContent);
-            handleSaveRecord();
         })
         .catch(error => {
             console.error('Error:', error);
@@ -124,7 +117,6 @@ const SpeakingPage = () => {
         .then(data => {
             const messageContent = data.choices[0].message.content;
             setFeedback(messageContent);
-            handleSaveRecord();
         })
         .catch(error => {
             console.error('Error:', error);
@@ -172,8 +164,6 @@ const SpeakingPage = () => {
         recognition.onend = () => {
             setIsLoading(false);
             calculateWordsPerMinute(); // Calculate words per minute when recognition ends
-            rateTranscript(transcript, prompt); // Rate the transcript after stopping
-            getFeedback(transcript, prompt); // Get feedback after stopping
         };
 
         recognition.start();
@@ -199,10 +189,14 @@ const SpeakingPage = () => {
         if (recognitionRef.current) {
             recognitionRef.current.stop();
             setIsLoading(false);
+            rateTranscript(transcript, prompt); // Rate the transcript after stopping
+            getFeedback(transcript, prompt); // Get feedback after stopping
+            calculateWordsPerMinute(); // Calculate words per minute when stopping
+
             if (mediaRecorderRef.current) {
                 mediaRecorderRef.current.stopRecording(() => {
                     audioBlobRef.current = mediaRecorderRef.current!.getBlob();
-                    handleSaveRecord();
+                    saveRecord(); // Save the record after stopping recording
                 });
             }
         }
@@ -214,10 +208,9 @@ const SpeakingPage = () => {
         const wpm = words / durationInMinutes;
         setWordsPerMinute(wpm);
         setFluency(wpm >= 130 ? 'Fluent' : wpm >= 90 ? 'Intermediate' : 'Basic');
-        handleSaveRecord();
     };
 
-    const saveRecord = (transcript: string, prompt: string, audioBlob: Blob | null, rating: string, feedback: string, wordsPerMinute: number, fluency: string) => {
+    const saveRecord = () => {
         const newRecord = {
             prompt,
             transcript,
@@ -226,7 +219,7 @@ const SpeakingPage = () => {
             rating,
             feedback,
             date: new Date().toLocaleString(),
-            audio: audioBlob ? URL.createObjectURL(audioBlob) : null
+            audio: audioBlobRef.current ? URL.createObjectURL(audioBlobRef.current) : null
         };
         const updatedRecords = [newRecord, ...records];
         setRecords(updatedRecords);
@@ -339,30 +332,23 @@ const SpeakingPage = () => {
                     <div className="mt-8">
                         <h2 className="text-2xl font-bold text-center text-gray-800 mb-4">Past Records</h2>
                         {records.length > 0 ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {records.map((record, index) => (
-                                    <div key={index} className="bg-white p-6 rounded-lg shadow-md">
-                                        <p className="mb-2"><strong>Date:</strong> {record.date}</p>
-                                        <p className="mb-2"><strong>Prompt:</strong> {record.prompt}</p>
-                                        <p className="mb-2"><strong>Transcript:</strong></p>
-                                        <p className="bg-gray-100 p-2 rounded whitespace-pre-wrap leading-relaxed text-gray-700">{record.transcript}</p>
-                                        <p className="mt-2"><strong>Words Per Minute:</strong> {record.wordsPerMinute.toFixed(2)}</p>
-                                        <p className="mt-2"><strong>Fluency Tier:</strong> <span className={record.fluency === 'Fluent' ? 'text-green-600' : record.fluency === 'Intermediate' ? 'text-yellow-600' : 'text-red-600'}>{record.fluency}</span></p>
-                                        <p className="mt-2"><strong>Rating:</strong> {record.rating}</p>
-                                        <p className="mt-2"><strong>Feedback:</strong></p>
-                                        <p className="bg-green-100 p-2 rounded whitespace-pre-wrap leading-relaxed text-gray-700">{record.feedback}</p>
-                                        {record.audio && (
-                                            <div className="mt-4">
-                                                <strong>Audio:</strong>
-                                                <audio controls className="w-full mt-2">
-                                                    <source src={record.audio} type="audio/wav" />
-                                                    Your browser does not support the audio element.
-                                                </audio>
-                                            </div>
-                                        )}
-                                    </div>
-                                ))}
-                            </div>
+                            records.map((record, index) => (
+                                <div key={index} className="bg-white p-4 rounded shadow mb-4">
+                                    <p><strong>Date:</strong> {record.date}</p>
+                                    <p><strong>Prompt:</strong> {record.prompt}</p>
+                                    <p><strong>Transcript:</strong> {record.transcript}</p>
+                                    <p><strong>Words Per Minute:</strong> {record.wordsPerMinute.toFixed(2)}</p>
+                                    <p><strong>Fluency Tier:</strong> {record.fluency}</p>
+                                    <p><strong>Rating:</strong> {record.rating}</p>
+                                    <p><strong>Feedback:</strong> {record.feedback}</p>
+                                    {record.audio && (
+                                        <audio controls>
+                                            <source src={record.audio} type="audio/wav" />
+                                            Your browser does not support the audio element.
+                                        </audio>
+                                    )}
+                                </div>
+                            ))
                         ) : (
                             <p className="text-center text-gray-600">No past records found.</p>
                         )}
