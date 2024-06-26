@@ -17,14 +17,9 @@ const Main: React.FC = () => {
                     </div>
                 </div>
 
-                <h1 className='text-center text-7xl font-extrabold leading-tight'>
-                    An
-                    <span className='bg-span-bg bg-clip-text text-transparent'>
-                        AI powered
-                    </span>
-                    <br />
-                    Ielts Speaking Training
-                    </h1>
+                <h1 className="text-6xl font-bold mt-8">
+                    <span className="text-blue-600">Virtual Staging</span> with One-Click
+                </h1>
                 <p className="mt-3 text-2xl text-gray-600">
                 Generate stunning virtually staged images within seconds. No design skill required.
                 </p>
