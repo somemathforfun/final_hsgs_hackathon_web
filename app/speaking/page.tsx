@@ -3,8 +3,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import RecordRTC from 'recordrtc';
-
 declare const window: any;
 
 const SpeakingPage = () => {
@@ -18,19 +16,16 @@ const SpeakingPage = () => {
     const [fluency, setFluency] = useState('');
     const [taskType, setTaskType] = useState<number | null>(null);
     const [timeLeft, setTimeLeft] = useState(120); // 2 minutes countdown for Task 2
-    const [records, setRecords] = useState<any[]>([]); // State to store past records
     const recognitionRef = useRef<any>(null);
     const startTimeRef = useRef<number | null>(null);
     const speechSynthesisRef = useRef<SpeechSynthesisUtterance | null>(null);
-    const mediaRecorderRef = useRef<RecordRTC | null>(null);
-    const audioBlobRef = useRef<Blob | null>(null);
 
     const getRandomPrompt = (task: number) => {
         const taskMessages: { [key: number]: string } = {
             1: "Give me about 7 words speaking prompt for IELTS Speaking Task 1 without bold, highlighted text or special start character",
-            2: "Give me about 15 words speaking prompt for IELTS Speaking Task 2 without bold, highlighted text or special start character",
-            3: "Give me about 20 words speaking prompt for IELTS Speaking Task 3 without bold, highlighted text or special start character",
-            4: "Give me about 25 words speaking prompt for IELTS Speaking Task 4 without bold, highlighted text or special start character"
+            2: "Give me a speaking prompt for IELTS Speaking Task 2 without bold, highlighted text or special start character",
+            3: "Give me a speaking prompt for IELTS Speaking Task 3 without bold, highlighted text or special start character",
+            4: "Give me a speaking prompt for IELTS Speaking Task 4 without bold, highlighted text or special start character"
         };
 
         setTaskType(task);
@@ -68,11 +63,6 @@ const SpeakingPage = () => {
         }
         return () => clearTimeout(timer);
     }, [timeLeft, isLoading, taskType]);
-
-    useEffect(() => {
-        const savedRecords = JSON.parse(localStorage.getItem('speakingRecords') || '[]');
-        setRecords(savedRecords);
-    }, []);
 
     const rateTranscript = (transcript: string, prompt: string) => {
         fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -167,22 +157,6 @@ const SpeakingPage = () => {
         };
 
         recognition.start();
-
-        // Start audio recording
-        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-            const mediaRecorder = new RecordRTC(stream, {
-                type: 'audio',
-                mimeType: 'audio/wav',
-                recorderType: RecordRTC.StereoAudioRecorder,
-                desiredSampRate: 16000,
-            });
-            mediaRecorderRef.current = mediaRecorder;
-            mediaRecorder.startRecording();
-        }).catch(error => {
-            console.error('Media recording error:', error);
-            setError('An error occurred while accessing the microphone.');
-            setIsLoading(false);
-        });
     };
 
     const stopSpeechRecognition = () => {
@@ -192,38 +166,25 @@ const SpeakingPage = () => {
             rateTranscript(transcript, prompt); // Rate the transcript after stopping
             getFeedback(transcript, prompt); // Get feedback after stopping
             calculateWordsPerMinute(); // Calculate words per minute when stopping
-
-            if (mediaRecorderRef.current) {
-                mediaRecorderRef.current.stopRecording(() => {
-                    audioBlobRef.current = mediaRecorderRef.current!.getBlob();
-                    saveRecord(); // Save the record after stopping recording
-                });
-            }
         }
     };
 
     const calculateWordsPerMinute = () => {
-        const words = transcript.trim().split(/\s+/).length;
-        const durationInMinutes = (Date.now() - (startTimeRef.current || Date.now())) / 1000 / 60;
-        const wpm = words / durationInMinutes;
-        setWordsPerMinute(wpm);
-        setFluency(wpm >= 130 ? 'Fluent' : wpm >= 90 ? 'Intermediate' : 'Basic');
-    };
+        if (startTimeRef.current) {
+            const endTime = Date.now();
+            const durationInMinutes = (endTime - startTimeRef.current) / 60000;
+            const wordCount = transcript.trim().split(/\s+/).length;
+            const wpm = wordCount / durationInMinutes;
+            setWordsPerMinute(wpm);
+            startTimeRef.current = null; // Reset start time
 
-    const saveRecord = () => {
-        const newRecord = {
-            prompt,
-            transcript,
-            wordsPerMinute,
-            fluency,
-            rating,
-            feedback,
-            date: new Date().toLocaleString(),
-            audio: audioBlobRef.current ? URL.createObjectURL(audioBlobRef.current) : null
-        };
-        const updatedRecords = [newRecord, ...records];
-        setRecords(updatedRecords);
-        localStorage.setItem('speakingRecords', JSON.stringify(updatedRecords));
+            if (wpm >= 90) setFluency('Fluency Tier A');
+            else if (wpm >= 70) setFluency('Fluency Tier B');
+            else if (wpm >= 50) setFluency('Fluency Tier C');
+            else if (wpm >= 30) setFluency('Fluency Tier D');
+            else if (wpm >= 10) setFluency('Fluency Tier E');
+            else setFluency('Fluency Tier F');
+        }
     };
 
     const startSpeech = () => {
@@ -328,30 +289,6 @@ const SpeakingPage = () => {
                             </div>
                         )}
                         {error && <p className="text-red-500">{error}</p>}
-                    </div>
-                    <div className="mt-8">
-                        <h2 className="text-2xl font-bold text-center text-gray-800 mb-4">Past Records</h2>
-                        {records.length > 0 ? (
-                            records.map((record, index) => (
-                                <div key={index} className="bg-white p-4 rounded shadow mb-4">
-                                    <p><strong>Date:</strong> {record.date}</p>
-                                    <p><strong>Prompt:</strong> {record.prompt}</p>
-                                    <p><strong>Transcript:</strong> {record.transcript}</p>
-                                    <p><strong>Words Per Minute:</strong> {record.wordsPerMinute.toFixed(2)}</p>
-                                    <p><strong>Fluency Tier:</strong> {record.fluency}</p>
-                                    <p><strong>Rating:</strong> {record.rating}</p>
-                                    <p><strong>Feedback:</strong> {record.feedback}</p>
-                                    {record.audio && (
-                                        <audio controls>
-                                            <source src={record.audio} type="audio/wav" />
-                                            Your browser does not support the audio element.
-                                        </audio>
-                                    )}
-                                </div>
-                            ))
-                        ) : (
-                            <p className="text-center text-gray-600">No past records found.</p>
-                        )}
                     </div>
                 </div>
             </div>
