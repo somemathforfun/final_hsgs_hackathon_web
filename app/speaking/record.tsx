@@ -7,7 +7,7 @@ import RecordRTC from 'recordrtc';
 
 declare const window: any;
 
-const record = () => {
+const Record = () => {
     const [prompt, setPrompt] = useState('');
     const [transcript, setTranscript] = useState('');
     const [error, setError] = useState('');
@@ -359,4 +359,4 @@ const record = () => {
     );
 };
 
-export default record;
+export default Record;
