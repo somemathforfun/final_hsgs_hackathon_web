@@ -25,6 +25,16 @@ const SpeakingPage = () => {
     const mediaRecorderRef = useRef<RecordRTC | null>(null);
     const audioBlobRef = useRef<Blob | null>(null);
 
+    const [isClient, setIsClient] = useState(false);
+
+    useEffect(() => {
+      setIsClient(true);
+    }, []);
+  
+    if (!isClient) {
+      return null;
+    }
+
     const getRandomPrompt = (task: number) => {
         const taskMessages: { [key: number]: string } = {
             1: "Give me about 7 words speaking prompt for IELTS Speaking Task 1 without bold, highlighted text or special start character",
