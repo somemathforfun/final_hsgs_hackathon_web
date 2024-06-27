@@ -278,7 +278,7 @@ const Record = () => {
     return (
         <div>
             <Header />
-            <main className="container mx-auto p-4">
+            <main className="mx-auto p-4 bg-gradient-to-t from-blue-50 to-blue-50">
                 <h1 className="text-2xl font-bold mb-4">IELTS Speaking Practice</h1>
                 <div className="mb-4">
                     <button onClick={() => getRandomPrompt(1)} className="mr-2 p-2 bg-blue-500 text-white rounded">Task 1</button>
