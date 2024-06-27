@@ -8,7 +8,7 @@
     --color-1: #BA7ECF;
     --color-2: #F19ED0;
     --color-3: #948DF2;
-    --color-4: #a8b3fa;
+    --color-4: #818eef;
     --color-5: #FBCEA5;
     --new-color: linear-gradient(to right, var(--color-1) 2%, var(--color-2) 22%, var(--color-3) 43%, var(--color-4) 73%, var(--color-5) 100%);
     background: var(--new-color);
