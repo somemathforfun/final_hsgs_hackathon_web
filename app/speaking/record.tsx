@@ -42,7 +42,7 @@ const Record = () => {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                "model": "openai/gpt-3.5-turbo",
+                "model": "openai/gpt-4o",
                 "messages": [
                     { "role": "user", "content": taskMessages[task] },
                 ],
@@ -92,7 +92,7 @@ const Record = () => {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                "model": "openai/gpt-3.5-turbo",
+                "model": "openai/gpt-4o",
                 "messages": [
                     { "role": "user", "content": `Rate the following transcript based on the IELTS Speaking band without asterick character in returned rating, then each part of the returned rating start with an hyphen, with overall band score on the first line start with "- Overall Speaking Band Score: ". Prompt: "${prompt}". Transcript: "${transcript}"` },
                 ],
@@ -118,7 +118,7 @@ const Record = () => {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                "model": "openai/gpt-3.5-turbo",
+                "model": "openai/gpt-4o",
                 "messages": [
                     { "role": "user", "content": `Give feedback for improvement and an short example answer script based on the IELTS Speaking band without Fluency, Coherance feedback, without asterick character in returned feedback, then each part of the returned feedback start with an hyphen. Prompt: "${prompt}". Transcript: "${transcript}"` },
                 ],

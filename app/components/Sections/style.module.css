@@ -1,0 +1,17 @@
+/* style.module.css */
+
+/* Define custom text color */
+.maintext {
+    color: #6267fe;
+}
+.gracol {
+    --color-1: #BA7ECF;
+    --color-2: #F19ED0;
+    --color-3: #948DF2;
+    --color-4: #a8b3fa;
+    --color-5: #FBCEA5;
+    --new-color: linear-gradient(to right, var(--color-1) 2%, var(--color-2) 22%, var(--color-3) 43%, var(--color-4) 73%, var(--color-5) 100%);
+    background: var(--new-color);
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
+}

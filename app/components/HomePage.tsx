@@ -11,7 +11,7 @@ const HomePage: React.FC = () => {
     return (
         <>
             <Main/>
-            {/* <Usp/> */}
+            <Usp/>
             <TrustedCompanies/>
 
 
