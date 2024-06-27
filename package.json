@@ -6,8 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "postinstall": "cp patch/RecordRTC.js node_modules/recordrtc/RecordRTC.js"
+    "lint": "next lint"
   },
   "dependencies": {
     "@nextui-org/avatar": "^2.0.30",
