@@ -30,7 +30,7 @@ const Main: React.FC = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     return (
         <div>
-            <section className='flex flex-col items-center justify-center py-24 bg-gradient-to-t from-blue-50 to-blue-100'>
+            <section className='flex flex-col items-center justify-center py-20 bg-gradient-to-t from-blue-50 to-blue-100'>
                 <h1 className={`text-center text-7xl font-extrabold leading-tight`}>
                     <span className={`${styles.maintext}`}>
                         An{' '}

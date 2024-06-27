@@ -8,16 +8,14 @@ const Footer: React.FC = () => {
         <footer className="bg-slate-50 bg-opacity-90 text-black z-20">
             <div className="max-w-6xl mx-auto py-10 px-4 sm:px-6 lg:px-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-8">
                 <div>
-                    <h2 className="text-sm font-semibold text-blue-900">Virtual Staging AI</h2>
+                    <h2 className="text-sm font-semibold text-blue-900">HSGS Hackathon</h2>
                 </div>
                 <div>
                     <h3 className="text-black font-semibold mb-4 text-sm">Quick Links</h3>
                     <ul className="text-gray-700 text-xs">
                         <li>Home</li>
-                        <li>Gallery</li>
-                        <li>Prices</li>
-                        <li>Login</li>
-                        <li>Career</li>
+                        <li>Speaking</li>
+                        <li>StressTest</li>
                     </ul>
                 </div>
                 <div>
@@ -30,13 +28,13 @@ const Footer: React.FC = () => {
                     </ul>
                 </div>
                 <div>
-                    <h3 className="text-black font-semibold mb-4 text-sm">Blog</h3>
+                    <h3 className="text-black font-semibold mb-4 text-sm">Developer</h3>
                     <ul className="text-gray-700 text-xs">
-                        <li>How to Do Virtual Staging</li>
-                        <li>Virtual Staging Pricing</li>
-                        <li>Virtual Staging AI</li>
-                        <li>Boxbrownie Competitors</li>
-                        <li>Interior AI alternative</li>
+                        <li>Doan Gia Huy</li>
+                        <li>Tran Bao Khanh</li>
+                        <li>Nguyen Tran An Hiep</li>
+                        <li>Nguyen Trung Thai Son</li>
+                        <li>Kieu Thanh Binh</li>
                     </ul>
                 </div>
                 <div>
@@ -52,14 +50,14 @@ const Footer: React.FC = () => {
                 <div>
                     <h3 className="text-black font-semibold mb-4 text-sm">Mailing Address</h3>
                     <address className="not-italic text-gray-700 text-xs">
-              Virtual Staging AI Inc<br />
-              2810 N Church St<br />
-              Wilmington, DE 19802
+              HUS HSGS High School<br />
+              182 Luong The Vinh Street<br />
+              Ha Noi, postcode: 11400
                     </address>
                 </div>
             </div>
             <div className="text-center py-4 text-gray-600 text-xs">
-          © 2024 Virtual Staging AI™
+          © 2024 DuTuyenTongHop23™
             </div>
         </footer>
     );
