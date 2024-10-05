@@ -43,7 +43,7 @@ const Header: React.FC = () => {
                 </button>
                 <nav className={`md:flex md:space-x-4 ${isMenuOpen ? 'block' : 'hidden md:block'}`}>
                     <NavLink href="/speaking" text="Speaking" />
-                    <NavLink href="/gallery" text="Gallery" />
+                    <NavLink href="/pron" text="Pronunciation" />
                     <NavLink href="/prices" text="Prices" />
                 </nav>
             </div>
